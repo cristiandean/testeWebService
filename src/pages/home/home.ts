@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import { ItemsProvider } from '../../providers/items/items';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+
 
 @Component({
   selector: 'page-home',
@@ -8,16 +10,22 @@ import { ItemsProvider } from '../../providers/items/items';
 })
 export class HomePage {
 
-  public items:any[];
-  constructor(public navCtrl: NavController, itemProvider:ItemsProvider) {
-    this.updateItems();
-    itemProvider.getAll().subscribe(u=>{
-        this.items = u.json();
-    });
+  public items: any[];
+  constructor(public platform: Platform, public navCtrl: NavController, itemProvider: ItemsProvider, private barcodeScanner: BarcodeScanner) {
+    //itemProvider.getAll().subscribe(u=>{
+    //   this.items = u.json();
+    //});
+
   }
 
+  camera() {
+    this.platform.ready().then(() => {
+      this.barcodeScanner.scan().then((barcodeData) => {
+        alert(barcodeData.text);
+      }, (err) => {
+        alert("erro");
+      });
+    });
 
-  updateItems(){
-    this.items = [{nome:"aaa"}, {nome:"bbb"}];
   }
 }
